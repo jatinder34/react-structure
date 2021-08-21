@@ -6,16 +6,19 @@ import Login from "./Pages/Auth/Login";
 import "./assets/scss/style.scss";
 import Dashboard from "./Pages/Dashboard";
 import DashboardLayout from "./Components/Layouts/DashboardLayout";
+import Loader from "./Components/Commons/Loader";
 
 const App = () => {
   return (
     <>
-      <Router>
-        <Switch>
-          <AppRoutes exact path="/" Layout={AuthLayout} Component={Login} />
-          <AppRoutes exact path="/dashboard" Layout={DashboardLayout} Component={Dashboard} />
-        </Switch>
-      </Router>
+      <Loader>
+        <Router>
+          <Switch>
+            <AppRoutes exact path="/" Layout={AuthLayout} Component={Login} />
+            <AppRoutes exact path="/dashboard" Layout={DashboardLayout} Component={Dashboard} />
+          </Switch>
+        </Router>
+      </Loader>
     </>
   );
 };
