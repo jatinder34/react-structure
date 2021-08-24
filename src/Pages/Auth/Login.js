@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { doLogin } from "../../redux/auth/action";
+import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ doLogin, auth }) => {
+  let history = useHistory();
+  
+  /**
+   * Handle login for submit
+   * @param {{email: string, password:string}} params
+   */
+  const handleLoginSubmit = async params => {
+    await doLogin(params);
+  };
+  useEffect(() => {
+    if(auth.isLogin){
+      localStorage.setItem('_reactStructureToken',auth.data.token)
+      history.push('/dashboard')
+    }
+  }, [auth, history])
   return (
     <section className="page-login vh-100">
       <div className="container-fluid">
@@ -23,11 +41,16 @@ const Login = () => {
                     .required("Password is required")
                 })}
                 onSubmit={fields => {
-                  alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields, null, 4));
+                  handleLoginSubmit(fields);
                 }}
                 render={({ errors, status, touched }) => (
                   <Form>
                     <h3 className="fw-normal mb-3 pb-3">Log in</h3>
+                    {auth.error ? (
+                      <div className="alert alert-danger text-capitalize" role="alert">
+                        {auth.error}
+                      </div>
+                    ) : null}
 
                     <div className="form-group mb-3">
                       <label htmlFor="email">Email</label>
@@ -38,6 +61,7 @@ const Login = () => {
                         className={"form-control" + (errors.email && touched.email ? " is-invalid" : "")}
                       />
                       <ErrorMessage name="email" component="div" className="invalid-feedback" />
+                      <small className="text-muted">Use this email : eve.holt@reqres.in</small>
                     </div>
                     <div className="form-group mb-3">
                       <label htmlFor="password">Password</label>
@@ -48,11 +72,12 @@ const Login = () => {
                         className={"form-control" + (errors.password && touched.password ? " is-invalid" : "")}
                       />
                       <ErrorMessage name="password" component="div" className="invalid-feedback" />
+                      <small className="text-muted">Use this password : cityslicka</small>
                     </div>
 
                     <div className="pt-1 mb-4">
-                      <button className="btn btn-primary btn-lg" type="submit">
-                        Login
+                      <button className="btn btn-primary btn-lg" type="submit" disabled={auth.loading ? true : false}>
+                        {auth.loading ? <i className="fa fa-spinner fa-spin" /> : ""} Login
                       </button>
                     </div>
                   </Form>
@@ -73,4 +98,13 @@ const Login = () => {
   );
 };
 
-export default Login;
+const mapStateToProps = ({ auth }) => ({
+  auth
+});
+const mapDispatcherToProps = {
+  doLogin
+};
+export default connect(
+  mapStateToProps,
+  mapDispatcherToProps
+)(Login);

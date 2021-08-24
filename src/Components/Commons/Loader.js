@@ -4,7 +4,7 @@ const Loader = ({ children }) => {
   return (
     <>
       {children}
-      <div className="loader">
+      {/* <div className="loader">
         <div className="loader-content">
           <span>L</span>
           <span>o</span>
@@ -17,7 +17,7 @@ const Loader = ({ children }) => {
           <span>.</span>
           <span>.</span>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
